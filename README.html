@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset=utf8>
+<title>incelim &#8212; Relax NG Splicer</title>
+<body>
+<div class="article" title="incelim &#8212; Relax NG Splicer"><div class="titlepage"><div><div><h2 class="title"><a name="id35818745"></a>incelim &#8212; Relax NG Splicer</h2></div><div><h3 class="subtitle"><i>Version 1</i></h3></div></div><hr></div>
+<p>This is a github fork of the incelim sources from
+<a href="http://ftp.davidashen.net/incelim/">http://ftp.davidashen.net/incelim/</a>
+<div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#id36098082">Package Contents</a></span></dt><dt><span class="section"><a href="#id36098190">Invocation</a></span></dt><dt><span class="section"><a href="#id36098286">Aknowledgements</a></span></dt><dt><span class="section"><a href="#id36098297">Terms and Conditions</a></span></dt><dt><span class="section"><a href="#id36098309">News and updates</a></span></dt></dl></div><div class="abstract" title="Abstract"><div class="titlepage"></div><p>
+   incelim takes a Relax NG grammar in XML syntax, expands all
+   includes and externalRefs, and optionally replaces references
+   to text, empty, or notAllowed with the patterns. The result is
+   a 'compiled' schema convenient for distribution.
+  </p></div><p>
+    The package includes stylesheets for each of the transformation
+    steps, and two kinds of glue: XSLT stylesheet incelim.xsl, which
+    chains the transformations using exsl:node-set(), and a shell
+    script, incelim, which applies each of the stylesheets to the 
+    serialized result of the previous one.
+  </p><div class="section" title="Package Contents"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id36098082"></a>Package Contents</h2></div></div></div><div class="variablelist"><dl><dt><span class="term">inc.xsl</span></dt><dd><p>
+        literally inserts contents of included files (and externalRefs);
+      </p></dd><dt><span class="term">elim.xsl</span></dt><dd><p>removes overriden defines;
+      </p></dd><dt><span class="term">strip.xsl</span></dt><dd><p>splices references to single parameterless patterns
+        (text,empty,notAllowed);
+      </p></dd><dt><span class="term">clean.xsl</span></dt><dd><p>filters out empty divs and unreferenced defines;
+      </p></dd><dt><span class="term">incelim.xsl</span></dt><dd><p>XSLT glue to chain the transformations;
+      </p></dd><dt><span class="term">incelim</span></dt><dd><p>(ash or bash) shell script to run each of the
+      transformations in order;
+      </p></dd><dt><span class="term">saxon-6.5.3.diff</span></dt><dd><p>performance patch for SAXON 6.5.3;
+      </p></dd><dt><span class="term">readme.txt, readme.dbx</span></dt><dd><p>brief description in plain text and DocBook XML formats;
+      </p></dd><dt><span class="term">license.txt</span></dt><dd><p>the license.
+      </p></dd></dl></div></div><div class="section" title="Invocation"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id36098190"></a>Invocation</h2></div></div></div><p>For the XSLT glue, the arguments are the source schema and
+  the stylesheet. Parameter <code class="varname">rinses</code> specifies
+  the number of times to apply strip/clean phase (it should be recursive,
+  but it would be too complex for XSLT to stop timely). 1 is the default,
+  more than 3 does not make sense in most practical cases.
+  </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+    xsltproc compiled against libxml 20604, libxslt 10102 and libexslt 802
+    and earlier versions cannot be used with this stylesheets due to bugs
+    in implementation of exsl:node-set();
+    </p></li><li class="listitem"><p>
+    SAXON 6.5.[23] and jd.xslt 1.5.5 are slow, a patch for SAXON 6.5.3 that
+    makes it fast is included in the distribution (saxon-6.5.3.diff).
+    </p></li></ul></div></div><p>The shell script takes a list of schema files and puts the
+  result for each <code class="filename">schema.rng</code> into
+  <code class="filename">schema-compiled.rng</code>. Additionally,the following
+  command-line options are accepted:
+  </p><div class="variablelist"><dl><dt><span class="term"><code class="option">-nnn</code></span></dt><dd><p>number of strip/clean passes (default is <code class="option">-1</code>)
+    </p></dd><dt><span class="term"><code class="option">-processor</code></span></dt><dd><p>XSLT processor to use, default is
+    <code class="option">-saxon</code>, other options are xt, jd.xslt, xalan,
+    4xslt, xsltproc
+    </p></dd></dl></div><p>
+  Environment variable <code class="varname">INCELIM</code> should point to the
+  directory containing XSLT scripts, default is
+  <code class="filename">/usr/local/lib/incelim</code>.  Temporary files are
+  created in a directory pointed to by environment variable
+  <code class="varname">TMPDIR</code>, <code class="filename">/tmp</code> by default.
+</p></div><div class="section" title="Aknowledgements"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id36098286"></a>Aknowledgements</h2></div></div></div><p>I would like to thank Sebastian Rahtz for the idea, inspiration, sample
+stylesheet using exsl:node-set(),  and testing of the program.
+</p></div><div class="section" title="Terms and Conditions"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id36098297"></a>Terms and Conditions</h2></div></div></div><p>This software is distributed under BSD license. The details
+are in <code class="filename">license.txt</code>.
+</p></div><div class="section" title="News and updates"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id36098309"></a>News and updates</h2></div></div></div><p>
+Visit <a class="ulink" href="http://davidashen.net/" target="_top">http://davidashen.net/</a>.
+</p></div></div></body></html>

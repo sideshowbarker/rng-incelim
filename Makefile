@@ -1,0 +1,10 @@
+HTML2MARKDOWN=html2text
+WGET=wget
+WGETFLAGS=
+
+all: README.md
+
+README.md: README.html
+	$(HTML2MARKDOWN) $(HTML2MARKDOWNFLAGS) $< > $@
+
+clean:
